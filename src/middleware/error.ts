@@ -2,9 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import { AppError } from '../types';
 import { logger } from '../utils/logger';
 
-// Express identifies error-handling middleware by its 4-parameter signature.
-// The first parameter MUST be named 'err' and typed as Error (or any).
-// Express will only call this middleware when next(err) is called.
 // It must be registered LAST in app.ts — after all routes.
 export function errorHandler(
   err: Error,
@@ -14,12 +11,12 @@ export function errorHandler(
   _next: NextFunction   // must be declared even if unused — Express requires 4 params
 ): void {
 
-  // ── Known application errors ───────────────────────────────────
-  // These are errors we deliberately threw with a specific status code.
-  // NotFoundError, ConflictError, ValidationError, GoneError all extend AppError.
+  //  Known application errors 
+  // These are errors we deliberately threw with a specific status code
+  // NotFoundError, ConflictError, ValidationError, GoneError all extend AppError
   if (err instanceof AppError) {
-    // No need to log these at error level — they're expected, not bugs.
-    // A 404 is not a bug. A 409 is not a bug.
+    // No need to log these at error level — they're expected, not bugs
+    // 404 & 409 is not a bug
     logger.warn('Application error', {
       code: err.code,
       message: err.message,
@@ -36,7 +33,7 @@ export function errorHandler(
     return;
   }
 
-  // ── PostgreSQL unique constraint violation ─────────────────────
+  //  PostgreSQL unique constraint violation 
   // Happens if two requests try to create the same short code simultaneously.
   // pg error code '23505' = unique_violation.
   // We handle it here as a safety net even though the service checks first,
@@ -52,7 +49,7 @@ export function errorHandler(
     return;
   }
 
-  // ── Unknown errors ────────────────────────────────────────────
+  //  Unknown errors 
   // These are genuine bugs — unexpected throws, DB connection failures, etc.
   // Log the full error including stack trace for debugging.
   // Never send stack traces to the client — information leakage.
@@ -67,7 +64,7 @@ export function errorHandler(
     success: false,
     error: {
       code: 'INTERNAL_ERROR',
-      // Vague message intentionally — don't leak internal details
+      // Vague message intentionally — don't leak internal details - Production conventions
       message: 'An unexpected error occurred',
     },
   });

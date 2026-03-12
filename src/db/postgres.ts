@@ -36,9 +36,9 @@ pool.on('error', (err) => {
 });
 
 /**
- * Call this at startup to verify the DB is reachable before accepting traffic.
+ * Call this at startup to verify the DB is reachable before accepting traffic
  * Fails fast: if the DB is misconfigured, crash immediately with a clear message
- * rather than serving requests that will all fail.
+ * rather than serving requests that will all fail
  */
 export async function connectDb(): Promise<void> {
   // connect() borrows a client from the pool

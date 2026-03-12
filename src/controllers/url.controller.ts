@@ -9,15 +9,14 @@ export class UrlController {
   // Body: { url, customAlias?, expiresInDays? }
   shorten = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      // ── Parse and validate request body with Zod ─────────────
+      // parse and validate req body
       // safeParse never throws — returns { success: true, data } or
-      // { success: false, error } so we handle both cases cleanly.
+      // { success: false, error } so we handle both cases
       const parsed = ShortenSchema.safeParse(req.body);
 
       if (!parsed.success) {
-        // Zod gives us detailed errors per field.
-        // We format them into a clean array for the API consumer.
-        // e.g. [{ field: 'url', message: 'Invalid URL format' }]
+        // Zod gives us detailed errors per field
+        // We format them into a clean array for the API consumer
         res.status(400).json({
           success: false,
           error: {
@@ -48,8 +47,8 @@ export class UrlController {
         expiresAt,
       });
 
-      // 201 Created — semantically correct for resource creation.
-      // 200 OK would also work but 201 is more precise.
+      // 201 Resource Created — specifically
+      // 200 OK - generic
       res.status(201).json({
         success: true,
         data: result,

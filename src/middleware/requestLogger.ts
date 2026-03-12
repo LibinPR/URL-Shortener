@@ -4,8 +4,6 @@ import { logger } from '../utils/logger';
 //Logs every incomimg requets with method , path , status code and duration
 
 export function requestLogger(req: Request, res: Response, next: NextFunction): void {
-    //record when request arrived
-
     const start = Date.now();
 
     // 'finish' fires after the response has been fully sent to the client

@@ -5,13 +5,13 @@ import { config } from './config';
 import { logger } from './utils/logger';
 
 async function main() {
-  // ── Connect to infrastructure before accepting traffic ───────────
-  // If DB connection fails here, we crash with a clear message.
-  // Better than starting the server and having every request fail.
+  //  Connect to infrastructure before accepting traffic 
+  // If DB connection fails here, we crash with a clear message
+  // Better than starting the server and having every request fail
   await connectDb();
 
-  // Redis failure is non-fatal — app works without cache, just slower.
-  // connect() is called but errors won't crash startup.
+  // Redis failure is non-fatal — app works without cache, just slower
+  // connect() is called but errors won't crash startup
   await (cache as any).connect().catch((err: Error) => {
     logger.warn('Redis unavailable at startup, continuing without cache', {
       error: err.message,
@@ -27,7 +27,7 @@ async function main() {
     });
   });
 
-  // ── Graceful shutdown ─────────────────────────────────────────────
+  //  Graceful shutdown 
   // When the process receives SIGTERM (e.g. docker stop, Ctrl+C),
   // we don't kill immediately. We:
   // 1. Stop accepting new connections
@@ -36,11 +36,11 @@ async function main() {
   // 4. Exit
   //
   // Without this, a request in the middle of a DB transaction
-  // could be cut off, leaving the DB in an inconsistent state.
+  // could be cut off, leaving the DB in an inconsistent state
   async function shutdown(signal: string) {
     logger.info(`${signal} received, shutting down gracefully`);
 
-    // server.close() stops accepting NEW connections.
+    // server.close() stops accepting NEW connections
     // The callback fires when all existing connections are closed.
     server.close(async () => {
       logger.info('HTTP server closed');
@@ -52,9 +52,9 @@ async function main() {
       process.exit(0);
     });
 
-    // Force exit after 10 seconds if graceful shutdown hangs.
+    // Force exit after 10 seconds if graceful shutdown hangs
     // This prevents the process from hanging forever if a connection
-    // refuses to close (e.g. a long-polling client).
+    // refuses to close (e.g. a long-polling client)
     setTimeout(() => {
       logger.error('Forced shutdown after timeout');
       process.exit(1);
@@ -67,7 +67,7 @@ async function main() {
   process.on('SIGINT', () => shutdown('SIGINT'));
 
   // Catch unhandled promise rejections — async functions that threw
-  // without being caught. Log and exit — unknown state is dangerous.
+  // without being caught. Log and exit — unknown state is dangerous
   process.on('unhandledRejection', (reason) => {
     logger.error('Unhandled rejection', { reason });
     process.exit(1);

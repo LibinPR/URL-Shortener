@@ -42,10 +42,6 @@ export interface UrlResponse {
   createdAt: Date;
 }
 
-/**
- * Analytics response — includes click count.
- * Separate from UrlResponse because most callers don't need stats.
- */
 export interface UrlStats {
   shortCode: string;
   originalUrl: string;
@@ -91,15 +87,6 @@ export interface ICache {
 // The error handler middleware reads these to form the response.
 // ─────────────────────────────────────────────
 
-/**
- * Base class for all application errors.
- * Extends Error so it works with try/catch and instanceof.
- * 
- * Why Object.setPrototypeOf?
- * TypeScript compiles class inheritance to ES5 prototype chains.
- * When extending built-in classes like Error, the prototype chain
- * can break in certain environments. This line fixes it.
- */
 export class AppError extends Error {
   constructor(
     public readonly message: string,
@@ -120,7 +107,7 @@ export class NotFoundError extends AppError {
   }
 }
 
-// 409 — conflict (e.g. alias already taken)
+// 409 — conflict 
 export class ConflictError extends AppError {
   constructor(message: string) {
     super(message, 409, 'CONFLICT');

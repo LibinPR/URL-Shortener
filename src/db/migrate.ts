@@ -61,10 +61,9 @@ const createUrlsTable = `
   );
 `;
 
-// ── INDEXES ──────────────────────────────────────────────────────────────────
+//  INDEXES
 // Indexes speed up SELECT queries at the cost of slightly slower INSERTs
-// (because the index must be updated too).
-// Every column you regularly filter/sort on should have an index.
+// Every column you regularly filter/sort on should have an index
 
 const createIndexes = `
   -- Primary lookup: "give me the URL for short code X"
@@ -102,7 +101,7 @@ async function migrate(): Promise<void> {
   await pool.query(createIndexes);
   logger.info('Indexes created');
 
-  logger.info('Migration complete ✓');
+  logger.info('Migration complete');
 
   await pool.end();
 }

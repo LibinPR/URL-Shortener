@@ -14,7 +14,7 @@ import { config } from './config';
 export function createApp() {
   const app = express();
 
-  // ── Security ────────────────────────────────────────────────────
+  // Security 
   // helmet sets ~15 security-related HTTP headers automatically.
   // Examples: X-Frame-Options (prevent clickjacking),
   //           X-Content-Type-Options (prevent MIME sniffing),
@@ -28,7 +28,7 @@ export function createApp() {
     methods: ['GET', 'POST', 'DELETE'],
   }));
 
-  // ── Body parsing ─────────────────────────────────────────────────
+  //  Body parsing 
   // Without this, req.body is undefined for POST requests.
   // limit: '10kb' prevents someone sending a 100MB JSON body to crash the server.
   app.use(express.json({ limit: '10kb' }));
@@ -38,10 +38,9 @@ export function createApp() {
   app.use(requestLogger);
 
 
-    // ── Health check ──────────────────────────────────────────────────
+    // Health check 
   // Simple endpoint for load balancers and monitoring to verify the
-  // app is running. Returns 200 if the process is alive.
-  // No DB check here — that would make health checks slow and fragile.
+  //   // No DB check here — that would make health checks slow and fragile
   app.get('/health', (_req, res) => {
     res.status(200).json({
       status: 'ok',
@@ -50,7 +49,7 @@ export function createApp() {
     });
   });
 
-  // ── Rate limiting ─────────────────────────────────────────────────
+  // Rate limiting
   // Limits each IP to 60 requests per minute on API routes.
   // Prevents abuse — someone writing a script to create millions of short URLs.
   const apiLimiter = rateLimit({

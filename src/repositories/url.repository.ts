@@ -3,12 +3,6 @@ import { IUrlRepository, Url, CreateUrlDto } from '../types';
 import { toBase62 } from '../utils/base62';
 import { logger } from '../utils/logger';
 
-// Converts a raw PostgreSQL row to our clean TypeScript Url type.
-// This function is private to this file — nothing outside needs it.
-// 
-// Why 'any' here? The pg driver returns rows typed as Record<string, any>
-// because it can't know your schema at compile time. We convert to
-// our strict Url type immediately so the rest of the app is fully typed.
 function rowToUrl(row: Record<string, any>): Url {
   return {
     id: Number(row.id),
@@ -24,17 +18,14 @@ function rowToUrl(row: Record<string, any>): Url {
 
 export class UrlRepository implements IUrlRepository {
     async findByShortCode(shortCode: string): Promise<Url | null> {
-    // $1 is a parameterized query placeholder.
-    // NEVER do: `WHERE short_code = '${shortCode}'` — that's SQL injection.
-    // The pg driver sends the value separately, PostgreSQL treats it as
-    // pure data, not executable SQL. A user passing shortCode = "' OR 1=1 --"
-    // gets no results instead of dumping your entire database.
+    // $1 is a parameterized query placeholder
+    // NEVER do: `WHERE short_code = '${shortCode}'` — that's SQL injection
+    // gets no results instead of dumping your entire database
     const result = await pool.query(
       `SELECT * FROM urls WHERE short_code = $1 LIMIT 1`,
       [shortCode]
     );
 
-    // rows is always an array. If no row found, it's empty — not null, not undefined.
     if (result.rows.length === 0) {
       return null; // caller handles the "not found" case
     }
@@ -63,7 +54,7 @@ export class UrlRepository implements IUrlRepository {
     return withTransaction(async (client) => {
 
       // Step 1: INSERT the row.
-      // short_code gets a temporary placeholder — we'll update it next.
+      // short_code gets a temporary placeholder - then updated
       // RETURNING * gives us back the full inserted row including
       // the auto-generated id.
       const insertResult = await client.query(
@@ -104,11 +95,11 @@ export class UrlRepository implements IUrlRepository {
 
   async incrementClicks(shortCode: string): Promise<void> {
     try {
-      // click_count + 1 is atomic in PostgreSQL.
+      // click_count + 1 is atomic in PostgreSQL
       // Even if 1000 requests hit this simultaneously, each increment
-      // is applied correctly. No race conditions.
+      // is applied correctly. No race conditions
       // This is different from: read count → add 1 → write back
-      // (which WOULD have race conditions).
+      // (which WOULD have race conditions)
       await pool.query(
         `UPDATE urls
          SET click_count = click_count + 1
@@ -116,9 +107,8 @@ export class UrlRepository implements IUrlRepository {
         [shortCode]
       );
     } catch (err) {
-      // Log the error but DO NOT rethrow.
-      // This method is called fire-and-forget from the service.
-      // A failed click count must never cause a redirect to fail.
+      // This method is called fire-and-forget from the service
+      // A failed click count must never cause a redirect to fail
       logger.error('Failed to increment click count', {
         shortCode,
         error: (err as Error).message,
@@ -136,15 +126,15 @@ export class UrlRepository implements IUrlRepository {
       [shortCode]
     );
 
-    // rowCount tells us how many rows were affected.
-    // 0 means either the code doesn't exist or was already deactivated.
-    // We return a boolean so the service can decide whether to throw NotFoundError.
+    // rowCount tells us how many rows were affected
+    // 0 means either the code doesn't exist or was already deactivated
+    // We return a boolean so the service can decide whether to throw NotFoundError
     return (result.rowCount ?? 0) > 0;
   }
 
   async getStats(shortCode: string): Promise<Url | null> {
-    // No is_active filter here — we want stats even for deactivated URLs.
-    // Someone might deactivate a URL but still want to see how many clicks it got.
+    // No is_active filter here — we want stats even for deactivated URLs
+    // Someone might deactivate a URL but still want to see how many clicks it got
     const result = await pool.query(
       `SELECT * FROM urls WHERE short_code = $1 LIMIT 1`,
       [shortCode]
@@ -156,4 +146,4 @@ export class UrlRepository implements IUrlRepository {
 
     return rowToUrl(result.rows[0]);
   }
-}  // closes the class
+}
