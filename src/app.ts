@@ -23,14 +23,27 @@ export function createApp() {
 
   // cors allows browsers to make requests from other origins.
   // In dev we allow all origins. In production, lock to your domain.
-  app.use(cors({
-  origin: config.server.isDev
-    ? ['http://localhost:5173', 'http://localhost:3000']
-    : [
-        config.server.baseUrl,
-        'https://url-shortener-blond-seven-vercel-app',
-    ],
+const allowedOrigins = config.server.isDev
+  ? ['http://localhost:5173', 'http://localhost:3000']
+  : [
+      'https://url-shortener-blond-seven.vercel.app',
+      config.server.baseUrl,
+    ]
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (Postman, curl, server-to-server)
+    if (!origin) return callback(null, true)
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true)
+    }
+
+    console.warn('CORS blocked request', { origin })
+    return callback(new Error(`CORS: origin ${origin} not allowed`), false)
+  },
   methods: ['GET', 'POST', 'DELETE'],
+  credentials: true,
 }))
 
   //  Body parsing 
