@@ -34,6 +34,7 @@ export const config = {
     database: optional('DB_NAME', 'urlshortener'),
     user: optional('DB_USER', 'postgres'),
     password: optional('DB_PASSWORD', 'postgres123'),
+    ssl: optional('DB_SSL' , 'false') === 'true',
     poolMin: 2,
     poolMax: 10,
   },

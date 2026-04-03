@@ -28,6 +28,8 @@ export const pool = new Pool({
   idleTimeoutMillis: 30_000,            // close a connection idle for 30s
   connectionTimeoutMillis: 5_000,       // throw if can't get connection in 5s
   statement_timeout: 10_000,            // kill any query running longer than 10s
+  ssl: config.db.ssl ? { rejectUnauthorized: false } : false,
+
 });
 
 // Log pool-level errors — these aren't tied to a specific request

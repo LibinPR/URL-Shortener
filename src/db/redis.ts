@@ -20,63 +20,61 @@ import { logger } from '../utils/logger';
 class RedisCache implements ICache {
   private client: Redis;
 
-  constructor() {
-    //support both url based connection [production/upstash]
-    //and host/port connection [local development]
-    const redisUrl = process.env['REDIS_URL']?? undefined
+constructor() {
+  const redisUrl = process.env['REDIS_URL']
 
-    //temporary debug
-    logger.info('Redis config', {
+  logger.info('Redis config', {
     hasUrl: !!redisUrl,
     urlPrefix: redisUrl ? redisUrl.substring(0, 20) : 'none'
   })
 
+  if (redisUrl) {
+    // Production: Upstash URL-based connection
+    // Do NOT use lazyConnect with a URL — ioredis handles connection automatically
+    this.client = new Redis(redisUrl, {
+      maxRetriesPerRequest: 3,
+      enableOfflineQueue: false,
+      tls: {},  // force TLS for rediss:// connections
+    })
+  } else {
+    // Development: host/port connection
     this.client = new Redis({
       host: config.redis.host,
       port: config.redis.port,
-
-      // lazyConnect: don't attempt connection in the constructor.
-      // We call connect() explicitly at startup so we can await it
-      // and log success/failure properly.
       lazyConnect: true,
-
-      // If Redis is down, fail immediately instead of queuing up commands.
-      // We don't want requests to hang waiting for Redis to come back.
       enableOfflineQueue: false,
-
-      // Only retry once per command. If Redis is unavailable,
-      // we want to fall back to the DB immediately, not wait for retries.
       maxRetriesPerRequest: 1,
-
-      // Retry connection itself (reconnection strategy):
-      // If the connection drops, retry with exponential backoff up to 30s.
-      // This is for the persistent connection, not individual commands.
       retryStrategy(times) {
-        const delay = Math.min(times * 500, 30_000); // 500ms, 1s, 1.5s, ... max 30s
-        logger.warn(`Redis reconnecting, attempt ${times}`, { delay });
-        return delay; // return delay in ms, or null to stop retrying
+        const delay = Math.min(times * 500, 30_000)
+        logger.warn(`Redis reconnecting, attempt ${times}`, { delay })
+        return delay
       },
-    });
-
-    // Log errors but don't throw — see design principle above
-    this.client.on('error', (err) => {
-      logger.warn('Redis error — operating in degraded mode', {
-        error: err.message,
-      });
-    });
-
-    this.client.on('connect', () => {
-      logger.info('Redis connected');
-    });
-
-    this.client.on('reconnecting', () => {
-      logger.warn('Redis reconnecting...');
-    });
+    })
   }
+
+  this.client.on('error', (err) => {
+    logger.warn('Redis error — operating in degraded mode', {
+      error: err.message,
+    })
+  })
+
+  this.client.on('connect', () => {
+    logger.info('Redis connected')
+  })
+
+  this.client.on('reconnecting', () => {
+    logger.warn('Redis reconnecting...')
+  })
+}
 
   async connect(): Promise<void> {
-    await this.client.connect();
+  // URL-based connections (Upstash) connect automatically
+  // Only call connect() for lazyConnect host/port mode
+  if (!process.env['REDIS_URL']) {
+    await this.client.connect()
   }
+  logger.info('Redis ready')
+}
 
   /**
    * Get a value by key.
