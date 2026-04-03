@@ -26,7 +26,10 @@ export function createApp() {
   app.use(cors({
   origin: config.server.isDev
     ? ['http://localhost:5173', 'http://localhost:3000']
-    : config.server.baseUrl,
+    : [
+        config.server.baseUrl,
+        'https://url-shortener-blond-seven-vercel-app',
+    ],
   methods: ['GET', 'POST', 'DELETE'],
 }))
 
