@@ -39,6 +39,7 @@ export const config = {
   },
 
    redis: {
+    url: process.env['REDIS_URL']??null,
     host: optional('REDIS_HOST', 'localhost'),
     port: parseInt(optional('REDIS_PORT', '6379'), 10),
     ttlSeconds: parseInt(optional('REDIS_TTL_SECONDS', '86400'), 10),
