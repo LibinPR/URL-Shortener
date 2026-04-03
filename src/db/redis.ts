@@ -21,6 +21,9 @@ class RedisCache implements ICache {
   private client: Redis;
 
   constructor() {
+    //support both url based connection [production/upstash]
+    //and host/port connection [local development]
+    const redisUrl = process.env['REDIS_URL']
     this.client = new Redis({
       host: config.redis.host,
       port: config.redis.port,
