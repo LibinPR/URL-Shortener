@@ -1,0 +1,269 @@
+/* ── Layout ─────────────────────────────────────── */
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 16px;
+  gap: 40px;
+}
+
+.main {
+  width: 100%;
+  max-width: 580px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Header ─────────────────────────────────────── */
+.header {
+  text-align: center;
+}
+
+.logo {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: #ffffff;
+}
+
+.tagline {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 4px;
+}
+
+/* ── Card ───────────────────────────────────────── */
+.card {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #888;
+}
+
+/* ── Input Row ──────────────────────────────────── */
+.input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.input {
+  flex: 1;
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #f0f0f0;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.15s;
+  min-width: 0; /* prevents overflow in flex container */
+}
+
+.input:focus {
+  border-color: #555;
+}
+
+.input::placeholder {
+  color: #444;
+}
+
+.input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Buttons ────────────────────────────────────── */
+.btn-primary,
+.btn-secondary {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+
+.btn-primary {
+  background: #ffffff;
+  color: #000000;
+}
+
+.btn-secondary {
+  background: #2a2a2a;
+  color: #f0f0f0;
+  border: 1px solid #333;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover {
+  opacity: 0.85;
+}
+
+.btn-primary:disabled,
+.btn-secondary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Error ──────────────────────────────────────── */
+.error {
+  font-size: 0.85rem;
+  color: #f87171;
+  padding: 8px 12px;
+  background: rgba(248, 113, 113, 0.08);
+  border-radius: 6px;
+  border: 1px solid rgba(248, 113, 113, 0.2);
+}
+
+/* ── Result ─────────────────────────────────────── */
+.result {
+  background: #111;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.result-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.short-link {
+  color: #60a5fa;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.short-link:hover {
+  text-decoration: underline;
+}
+
+.result-original {
+  font-size: 0.78rem;
+  color: #555;
+  word-break: break-all;
+}
+
+.copy-btn {
+  background: #2a2a2a;
+  color: #ccc;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.copy-btn:hover {
+  background: #333;
+  color: #fff;
+}
+
+/* ── Stats ──────────────────────────────────────── */
+.stats {
+  background: #111;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  border-bottom: 1px solid #1e1e1e;
+  gap: 12px;
+}
+
+.stat-row:last-child {
+  border-bottom: none;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+.stat-value {
+  font-size: 0.9rem;
+  color: #ccc;
+  text-align: right;
+}
+
+.stat-clicks {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.stat-active {
+  color: #4ade80;
+}
+
+.stat-inactive {
+  color: #f87171;
+}
+
+.stat-link {
+  color: #60a5fa;
+  font-size: 0.85rem;
+  text-decoration: none;
+  text-align: right;
+  word-break: break-all;
+}
+
+.stat-link:hover {
+  text-decoration: underline;
+}
+
+.original-row {
+  align-items: flex-start;
+}
+
+/* ── Footer ─────────────────────────────────────── */
+.footer {
+  font-size: 0.78rem;
+  color: #333;
+  margin-top: auto;
+}
+
+/* ── Responsive ─────────────────────────────────── */
+@media (max-width: 480px) {
+  .input-row {
+    flex-direction: column;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+  }
+}

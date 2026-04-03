@@ -2,3 +2,9 @@ node_modules/
 dist/
 .env
 *.log
+
+# frontend files
+client/node_modules/
+client/dist/
+client/.env
+client/.env.production

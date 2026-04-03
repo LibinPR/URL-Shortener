@@ -33,7 +33,7 @@ export const config = {
     port: parseInt(optional('DB_PORT', '5432'), 10),
     database: optional('DB_NAME', 'urlshortener'),
     user: optional('DB_USER', 'postgres'),
-    password: optional('DB_PASSWORD', 'postgres'),
+    password: optional('DB_PASSWORD', 'postgres123'),
     poolMin: 2,
     poolMax: 10,
   },

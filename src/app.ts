@@ -24,9 +24,11 @@ export function createApp() {
   // cors allows browsers to make requests from other origins.
   // In dev we allow all origins. In production, lock to your domain.
   app.use(cors({
-    origin: config.server.isDev ? '*' : config.server.baseUrl,
-    methods: ['GET', 'POST', 'DELETE'],
-  }));
+  origin: config.server.isDev
+    ? ['http://localhost:5173', 'http://localhost:3000']
+    : config.server.baseUrl,
+  methods: ['GET', 'POST', 'DELETE'],
+}))
 
   //  Body parsing 
   // Without this, req.body is undefined for POST requests.
