@@ -23,11 +23,6 @@ class RedisCache implements ICache {
 constructor() {
   const redisUrl = process.env['REDIS_URL']
 
-  logger.info('Redis config', {
-    hasUrl: !!redisUrl,
-    urlPrefix: redisUrl ? redisUrl.substring(0, 20) : 'none'
-  })
-
   if (redisUrl) {
     // Production: Upstash URL-based connection
     // Do NOT use lazyConnect with a URL — ioredis handles connection automatically
