@@ -26,7 +26,7 @@ export function createApp() {
 const allowedOrigins = config.server.isDev
   ? ['http://localhost:5173', 'http://localhost:3000']
   : [
-      'https://url-shortener-blond-seven.vercel.app',
+      /\.vercel\.app$/,  //allow all domains with vercel.app subdomains
       config.server.baseUrl,
     ]
 
@@ -34,6 +34,12 @@ app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (Postman, curl, server-to-server)
     if (!origin) return callback(null, true)
+
+      const allowed = allowedOrigins.some(0 =>
+        typeof 0 ==='string' ? o ===origin : o.test(origin)
+      )
+
+      if(allowed) return callback(null , true)
 
     if (allowedOrigins.includes(origin)) {
       return callback(null, true)
