@@ -35,8 +35,8 @@ app.use(cors({
     // Allow requests with no origin (Postman, curl, server-to-server)
     if (!origin) return callback(null, true)
 
-      const allowed = allowedOrigins.some(0 =>
-        typeof 0 ==='string' ? o ===origin : o.test(origin)
+      const allowed = allowedOrigins.some(o =>
+        typeof o === 'string' ? o === origin : o.test(origin)
       )
 
       if(allowed) return callback(null , true)
